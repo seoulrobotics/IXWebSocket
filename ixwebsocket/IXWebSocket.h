@@ -75,6 +75,10 @@ namespace ix
         WebSocketInitResult connect(int timeoutSecs);
         void run();
 
+        // stopping non-background thread ::run instance
+        void stopForeground(uint16_t code = WebSocketCloseConstants::kNormalClosureCode,
+                  const std::string& reason = WebSocketCloseConstants::kNormalClosureMessage);
+
         // send is in text mode by default
         WebSocketSendInfo send(const std::string& data,
                                bool binary = false,

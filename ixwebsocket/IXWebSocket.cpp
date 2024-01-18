@@ -199,6 +199,13 @@ namespace ix
         }
     }
 
+    void WebSocket::stopForeground(uint16_t code, const std::string& reason)
+    {
+        close(code, reason);
+        _stop = true;
+        _sleepCondition.notify_one();
+    }
+
     WebSocketInitResult WebSocket::connect(int timeoutSecs)
     {
         {
