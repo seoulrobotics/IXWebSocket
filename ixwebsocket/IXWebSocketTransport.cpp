@@ -458,8 +458,8 @@ namespace ix
         while (true)
         {
             wsheader_type ws;
-            if (_rxbuf.size() < 2) break;                /* Need at least 2 */
-            const uint8_t* data = (uint8_t*) &_rxbuf[0]; // peek, but don't consume
+            if (_rxbuf.size() < 2) break;     /* Need at least 2 */
+            const auto data = _rxbuf.begin(); // peek, but don't consume
             ws.fin = (data[0] & 0x80) == 0x80;
             ws.rsv1 = (data[0] & 0x40) == 0x40;
             ws.rsv2 = (data[0] & 0x20) == 0x20;
@@ -606,7 +606,7 @@ namespace ix
                     // the internal buffer which is slow and can let the internal OS
                     // receive buffer fill out.
                     //
-                    _chunks.emplace_back(frameData);
+                    _chunks.emplace_back(std::move(frameData));
 
                     if (ws.fin)
                     {
