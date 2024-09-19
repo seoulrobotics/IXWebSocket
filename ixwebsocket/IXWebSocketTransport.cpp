@@ -421,12 +421,18 @@ namespace ix
 
     void WebSocketTransport::unmaskReceiveBuffer(const wsheader_type& ws)
     {
-        if (ws.mask)
+        if (!ws.mask)
         {
-            for (size_t j = 0; j != ws.N; ++j)
-            {
-                _rxbuf[j + ws.header_size] ^= ws.masking_key[j & 0x3];
-            }
+            return;
+        }
+        auto it = _rxbuf.begin() + ws.header_size;
+        const uint8_t mask[4] = {
+            ws.masking_key[0], ws.masking_key[1], ws.masking_key[2], ws.masking_key[3]};
+        const size_t n = ws.N;
+        for (size_t j = 0; j != n; ++j)
+        {
+            *it ^= mask[j & 0x3];
+            ++it;
         }
     }
 
